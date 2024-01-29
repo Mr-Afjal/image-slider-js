@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>image slider using javaScript</title>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slides">
+            <img src="1.jpg" class="active">
+            <img src="2.jpg">
+            <img src="3.jpg">
+            <img src="4.jpg">
+            <img src="5.jpg">
+        </div>
+        <div class="buttons">
+            <span class="next">&#10095</span>
+            <span class="prev">&#10094</span>
+        </div>
+
+        <div class="dots-container">
+            <div class="dot active" attr="0" onclick="switchImage(this)"></div>
+            <div class="dot" attr="1" onclick="switchImage(this)"></div>
+            <div class="dot" attr="2" onclick="switchImage(this)"></div>
+            <div class="dot" attr="3" onclick="switchImage(this)"></div>
+            <div class="dot" attr="4" onclick="switchImage(this)"></div>
+        </div>
+    </div>
+</body>
+<script>
+    // access the images
+    let slideImages = document.querySelectorAll('img');
+
+    // access the next and prev buttons
+    let next = document.querySelector('.next');
+    let prev = document.querySelector('.prev');
+
+    // access the indicators
+    let dots = document.querySelectorAll('.dot');
+
+    var counter = 0;
+    // code for next button
+    next.addEventListener('click',slideNext);
+    function slideNext(){
+        slideImages[counter].style.animation='next1 0.5s ease-in forwards';
+        if(counter>=slideImages.length-1){
+            counter= 0;
+        }
+        else{
+            counter++;
+        }
+        slideImages[counter].style.animation='next2 0.5s ease-in forwards';
+        indicators();
+    }
+    // code for prev button
+    prev.addEventListener('click',slidePrev);
+    function slidePrev(){
+        slideImages[counter].style.animation='prev1 0.5s ease-in forwards';
+        if(counter == 0){
+            counter = slideImages.length-1;
+        }
+        else{
+            counter--;
+        }
+        slideImages[counter].style.animation='prev2 0.5s ease-in forwards';
+        indicators();
+    }
+
+    // auto sliding
+    function autoSliding(){
+        deletInterval = setInterval(timer, 2000);
+        function timer(){
+            slideNext();
+            indicators();
+        }
+    }
+    autoSliding();
+
+    // stop autosliding when mouse is over
+    const container = document.querySelector('.slide-container');
+    container.addEventListener('mouseover',function(){
+        clearInterval(deletInterval);
+    });
+
+    // resume sliding when mouse is out
+    container.addEventListener('mouseout', autoSliding);
+
+    // add or remove active class from the indicators
+    function indicators(){
+        for(i = 0; i < dots.length; i++){
+            dots[i].className = dots[i].className.replace('active','');
+        }
+        dots[counter].className += 'active';
+    }
+
+    // add click event to the indicator
+    function switchImage(currentImage){
+        currentImage.classList.add('active');
+        var imageId = currentImage.getAttribute('attr');
+        if(imageId > counter){
+            slideImages[counter].style.animation='next1 0.5s ease-in forwards';
+            counter = imageId;
+            slideImages[counter].style.animation='next2 0.5s ease-in forwards';
+        }
+        else if(imageId == counter){
+            return;
+        }
+        else{
+            slideImages[counter].style.animation='prev1 0.5s ease-in forwards';
+            counter = imageId;
+            slideImages[counter].style.animation='prev2 0.5s ease-in forwards';
+        }
+        indicators();
+    }
+</script>
+</html>
